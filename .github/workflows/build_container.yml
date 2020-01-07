@@ -70,7 +70,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Make lowercase
-        run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+        run: echo "::set-env name=REPOSITORY::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
 
       - name: Pull image from GitHub Registry
         run: docker pull docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
@@ -91,7 +91,7 @@ jobs:
   #       uses: actions/checkout@master
 
   #     - name: Make lowercase
-  #       run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+  #       run: echo "::set-env name=REPOSITORY::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
 
   #     - name: Pull image from GitHub Registry
   #       run: docker pull docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
