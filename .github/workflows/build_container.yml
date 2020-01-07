@@ -19,17 +19,17 @@ jobs:
       IMAGE_TAG: cpu
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@master
 
-    - name: Build image from Dockerfile
-      run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
+      - name: Build image from Dockerfile
+        run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
 
-    - name: Login GitHub Registry
-      run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
+      - name: Login GitHub Registry
+        run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Push image to GitHub Registry
-      run: docker push docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
+      - name: Push image to GitHub Registry
+        run: docker push docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
 
 
   build-gpu:
@@ -39,17 +39,17 @@ jobs:
       IMAGE_TAG: gpu
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@master
 
-    - name: Build image from Dockerfile
-      run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
+      - name: Build image from Dockerfile
+        run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
 
-    - name: Login GitHub Registry
-      run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
+      - name: Login GitHub Registry
+        run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Push image to GitHub Registry
-      run: docker push docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
+      - name: Push image to GitHub Registry
+        run: docker push docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
 
 
   test-cpu:
@@ -60,6 +60,7 @@ jobs:
       IMAGE_TAG: cpu
 
     steps:
+      - name: Checkout
       uses: actions/checkout@master
 
       - name: Pull image from GitHub Registry
@@ -77,6 +78,7 @@ jobs:
   #     IMAGE_TAG: gpu
 
   #   steps:
+  #     - name: Checkout
   #     uses: actions/checkout@master
 
   #     - name: Pull image from GitHub Registry
