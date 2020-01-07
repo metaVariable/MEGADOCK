@@ -61,13 +61,13 @@ jobs:
 
     steps:
       - name: Checkout
-      uses: actions/checkout@master
+        uses: actions/checkout@master
 
       - name: Pull image from GitHub Registry
-      run: docker pull docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
+        run: docker pull docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
 
       - name: Test docking example
-      run: docker run docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG} megadock -R data/1gcq_r.pdb -L data/1gcq_l.pdb
+        run: docker run docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG} megadock -R data/1gcq_r.pdb -L data/1gcq_l.pdb
 
 
   # test-gpu:
@@ -79,10 +79,10 @@ jobs:
 
   #   steps:
   #     - name: Checkout
-  #     uses: actions/checkout@master
+  #       uses: actions/checkout@master
 
   #     - name: Pull image from GitHub Registry
-  #     run: docker pull docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
+  #       run: docker pull docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG}
 
   #     - name: Test docking example
-  #     run: docker run --gpus all docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG} megadock-gpu -R data/1gcq_r.pdb -L data/1gcq_l.pdb
+  #       run: docker run --gpus all docker.pkg.github.com/${{ github.repository }}/${IMAGE_NAME}:${IMAGE_TAG} megadock-gpu -R data/1gcq_r.pdb -L data/1gcq_l.pdb
