@@ -6,32 +6,95 @@ on:
       - master
   pull_request:
 
+env:
+  DOCKER_BUILDKIT: 1
+  IMAGE_NAME: megadock
+
 jobs:
 
   build-cpu:
-    name: build megadock-cpu
+    name: Build megadock-cpu
     runs-on: ubuntu-latest
+    env: 
+      IMAGE_TAG: cpu
 
     steps:
-    - name: checkout
-      uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@master
 
-    - name: build container
-      run: docker build . --file Dockerfiles/cpu/Dockerfile --tag megadock:cpu
+      - name: Make lowercase
+        run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
 
-    - name: test docking example
-      run: docker run megadock:cpu megadock -R data/1gcq_r.pdb -L data/1gcq_l.pdb
+      - name: Build image from Dockerfile
+        run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+
+      - name: Login GitHub Registry
+        run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image to GitHub Registry
+        run: docker push docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+
 
   build-gpu:
-    name: build megadock-gpu
+    name: Build megadock-gpu
     runs-on: ubuntu-latest
+    env: 
+      IMAGE_TAG: gpu
 
     steps:
-    - name: checkout
-      uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@master
 
-    - name: build container
-      run: docker build . --file Dockerfiles/gpu/Dockerfile --tag megadock:gpu
+      - name: Make lowercase
+        run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
 
-    # - name: test docking example
-    #   run: docker run --gpus all megadock:gpu megadock-gpu -R data/1gcq_r.pdb -L data/1gcq_l.pdb
+      - name: Build image from Dockerfile
+        run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+
+      - name: Login GitHub Registry
+        run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image to GitHub Registry
+        run: docker push docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+
+
+  test-cpu:
+    name: Test megadock-cpu
+    needs: build-cpu
+    runs-on: ubuntu-latest
+    env: 
+      IMAGE_TAG: cpu
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Make lowercase
+        run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+
+      - name: Pull image from GitHub Registry
+        run: docker pull docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+
+      - name: Test docking example
+        run: docker run docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG} megadock -R data/1gcq_r.pdb -L data/1gcq_l.pdb
+
+
+  # test-gpu:
+  #   name: Test megadock-gpu
+  #   needs: build-gpu
+  #   runs-on: ubuntu-latest
+  #   env: 
+  #     IMAGE_TAG: gpu
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@master
+
+  #     - name: Make lowercase
+  #       run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+
+  #     - name: Pull image from GitHub Registry
+  #       run: docker pull docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+
+  #     - name: Test docking example
+  #       run: docker run --gpus all docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG} megadock-gpu -R data/1gcq_r.pdb -L data/1gcq_l.pdb
