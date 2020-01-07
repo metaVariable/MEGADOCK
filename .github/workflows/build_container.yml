@@ -22,8 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Make lowercase
-        run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+      - name: Set repository name in lowercase
+        run: echo "::set-env name=REPOSITORY::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
 
       - name: Build image from Dockerfile
         run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Make lowercase
-        run: export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+        run: echo "::set-env name=REPOSITORY::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
 
       - name: Build image from Dockerfile
         run: docker build . --file Dockerfiles/${IMAGE_TAG}/Dockerfile --tag docker.pkg.github.com/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
